@@ -1,59 +1,86 @@
-import React, { Component } from 'react';
+import React from 'react';
+import MaterialTable from 'material-table';
 
-export class Employees extends Component {
-  static displayName = Employees.name;
+export default function Employees() {
+  const [state, setState] = React.useState({
+    columns: [
+      {title: 'Name', field: 'name'},
+      {title: 'Surname', field: 'surname'},
+      {title: 'Birth Year', field: 'birthYear', type: 'numeric'},
+      {
+        title: 'Birth Country',
+        field: 'birthcountry',
+        lookup: {34: 'Australia', 63: 'Russia', 30: 'Nepal'},
+      },
+    ],
+    data: [
+      {name: 'Anton', surname: 'Polkanov', birthYear: 2020, birthcountry: 63},
+      {
+        name: 'Jason',
+        surname: 'Phua',
+        birthYear: 2019,
+        birthcountry: 34,
+      },
+      {
+        name: 'Narayan',
+        surname: 'Pudasaini',
+        birthYear: 1999,
+        birthcountry: 30
+      }
+    ],
+  });
 
-  constructor(props) {
-    super(props);
-    this.state = { forecasts: [], loading: true };
-  }
-
-  componentDidMount() {
-    this.populateWeatherData();
-  }
-
-  static renderForecastsTable(forecasts) {
-    return (
-      <table className='table table-striped' aria-labelledby="tabelLabel">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (F)</th>
-            <th>Summary</th>
-          </tr>
-        </thead>
-        <tbody>
-          {forecasts.map(forecast =>
-            <tr key={forecast.date}>
-              <td>{forecast.date}</td>
-              <td>{forecast.temperatureC}</td>
-              <td>{forecast.temperatureF}</td>
-              <td>{forecast.summary}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    );
-  }
-
-  render() {
-    let contents = this.state.loading
-      ? <p><em>Loading...</em></p>
-      : Employees.renderForecastsTable(this.state.forecasts);
-
-    return (
-      <div>
-        <h1 id="tabelLabel" >Employees</h1>
-        <p>This component demonstrates fetching data from the server.</p>
-        {contents}
-      </div>
-    );
-  }
-
-  async populateWeatherData() {
-    const response = await fetch('weatherforecast');
-    const data = await response.json();
-    this.setState({ forecasts: data, loading: false });
-  }
+  return (
+    <MaterialTable
+      title="Employee list"
+      columns={state.columns}
+      data={state.data}
+      editable={{
+        onRowAdd: (newData) =>
+          new Promise((resolve) => {
+            setTimeout(() => {
+              resolve();
+              setState((prevState) => {
+                const data = [...prevState.data];
+                data.push(newData);
+                var d = new FormData();
+                d.append("lastName", JSON.stringify(data));
+                fetch('employeemanagement/add',
+                  {
+                    method: "POST",
+                    body: d
+                  })
+                  .then(response => response.text())
+                  .then(data => data)
+                return {...prevState, data};
+              });
+            }, 600);
+          }),
+        onRowUpdate: (newData, oldData) =>
+          new Promise((resolve) => {
+            setTimeout(() => {
+              resolve();
+              if (oldData) {
+                setState((prevState) => {
+                  const data = [...prevState.data];
+                  data[data.indexOf(oldData)] = newData;
+                  return {...prevState, data};
+                });
+              }
+            }, 600);
+          }),
+        onRowDelete: (oldData) =>
+          new Promise((resolve) => {
+            setTimeout(() => {
+              resolve();
+              setState((prevState) => {
+                const data = [...prevState.data];
+                data.splice(data.indexOf(oldData), 1);
+                return {...prevState, data};
+              });
+            }, 600);
+          }),
+      }}
+    />
+  );
 }

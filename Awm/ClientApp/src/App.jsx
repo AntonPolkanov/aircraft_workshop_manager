@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { Dashboard } from './components/Dashboard';
-import { Employees } from './components/Employees';
+import Employees from './components/Employees';
 import { Aircrafts } from './components/Aircrafts';
 
 import './custom.css'

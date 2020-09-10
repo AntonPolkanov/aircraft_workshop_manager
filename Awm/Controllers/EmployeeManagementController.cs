@@ -9,16 +9,16 @@ namespace Awm.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class EmployeeManagementController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<EmployeeManagementController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public EmployeeManagementController(ILogger<EmployeeManagementController> logger)
         {
             _logger = logger;
         }
@@ -34,6 +34,15 @@ namespace Awm.Controllers
                     Summary = Summaries[rng.Next(Summaries.Length)]
                 })
                 .ToArray();
+        }
+
+        [HttpPost("add")]
+        public IActionResult Add(string lastName)
+        {
+            if (lastName == null)
+                return BadRequest();
+            _logger.Log(LogLevel.Debug, lastName);
+            return Ok();
         }
     }
 }
