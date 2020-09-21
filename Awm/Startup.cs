@@ -1,4 +1,4 @@
-using Awm.awmDb;
+using Awm.AwmDb;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;

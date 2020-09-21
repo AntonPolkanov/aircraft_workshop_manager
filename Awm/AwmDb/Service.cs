@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Awm.awmDb
+namespace Awm.AwmDb
 {
     public partial class Service
     {
-        public int Idservice { get; set; }
-        public string Date { get; set; }
+        public int ServiceId { get; set; }
+        public int AircraftId { get; set; }
+        public DateTime? Date { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public int? ClientQuotesHrs { get; set; }
+
+        public virtual Aircraft Aircraft { get; set; }
     }
 }

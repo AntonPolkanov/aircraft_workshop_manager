@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Awm.awmDb
+namespace Awm.AwmDb
 {
     public partial class awmContext : DbContext
     {
@@ -22,10 +22,10 @@ namespace Awm.awmDb
         public virtual DbSet<Flight> Flight { get; set; }
         public virtual DbSet<Job> Job { get; set; }
         public virtual DbSet<Material> Material { get; set; }
-        public virtual DbSet<Part> Part { get; set; }
         public virtual DbSet<Service> Service { get; set; }
         public virtual DbSet<ServiceTimer> ServiceTimer { get; set; }
         public virtual DbSet<Shift> Shift { get; set; }
+        public virtual DbSet<SparePart> SparePart { get; set; }
         public virtual DbSet<UserAccount> UserAccount { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -41,30 +41,28 @@ namespace Awm.awmDb
         {
             modelBuilder.Entity<Aircraft>(entity =>
             {
-                entity.ToTable("aircraft");
-
                 entity.Property(e => e.AircraftId).HasColumnName("aircraftId");
 
                 entity.Property(e => e.Engine)
                     .HasColumnName("engine")
-                    .HasMaxLength(45)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.LastServiceDate).HasColumnName("lastServiceDate");
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
-                    .HasMaxLength(20)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.RegistrationNumber)
                     .HasColumnName("registrationNumber")
-                    .HasMaxLength(45)
+                    .HasMaxLength(150)
                     .IsUnicode(false);
 
                 entity.Property(e => e.SerialNumber)
                     .HasColumnName("serialNumber")
-                    .HasMaxLength(45)
+                    .HasMaxLength(150)
                     .IsUnicode(false);
             });
 
@@ -73,9 +71,12 @@ namespace Awm.awmDb
                 entity.HasKey(e => e.ImageId)
                     .HasName("PRIMARY");
 
-                entity.ToTable("aircraftImage");
+                entity.HasIndex(e => e.AircraftId)
+                    .HasName("aircraftId");
 
                 entity.Property(e => e.ImageId).HasColumnName("imageID");
+
+                entity.Property(e => e.AircraftId).HasColumnName("aircraftId");
 
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")
@@ -85,83 +86,122 @@ namespace Awm.awmDb
 
                 entity.Property(e => e.S3Path)
                     .HasColumnName("s3Path")
-                    .HasMaxLength(45)
+                    .HasMaxLength(250)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Aircraft)
+                    .WithMany(p => p.AircraftImage)
+                    .HasForeignKey(d => d.AircraftId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("AircraftImage_ibfk_1");
             });
 
             modelBuilder.Entity<Client>(entity =>
             {
-                entity.ToTable("client");
-
                 entity.Property(e => e.ClientId).HasColumnName("clientId");
 
                 entity.Property(e => e.Address)
                     .HasColumnName("address")
-                    .HasMaxLength(45)
+                    .HasMaxLength(200)
                     .IsUnicode(false);
 
                 entity.Property(e => e.ContactNmuber)
                     .HasColumnName("contactNmuber")
-                    .HasMaxLength(15)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
             });
 
             modelBuilder.Entity<ClientNotes>(entity =>
             {
-                entity.HasKey(e => e.IdclientNotesId)
-                    .HasName("PRIMARY");
+                entity.HasIndex(e => e.AircraftId)
+                    .HasName("aircraftId");
 
-                entity.ToTable("clientNotes");
+                entity.HasIndex(e => e.ClientId)
+                    .HasName("clientId");
 
-                entity.Property(e => e.IdclientNotesId).HasColumnName("idclientNotesId");
+                entity.Property(e => e.ClientNotesId).HasColumnName("clientNotesId");
 
-                entity.Property(e => e.Address)
-                    .HasColumnName("address")
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
+                entity.Property(e => e.AircraftId).HasColumnName("aircraftId");
+
+                entity.Property(e => e.ClientId).HasColumnName("clientId");
 
                 entity.Property(e => e.ContactNumber)
                     .HasColumnName("contactNumber")
-                    .HasMaxLength(45)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Description).HasColumnName("description");
+
+                entity.HasOne(d => d.Aircraft)
+                    .WithMany(p => p.ClientNotes)
+                    .HasForeignKey(d => d.AircraftId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("ClientNotes_ibfk_2");
+
+                entity.HasOne(d => d.Client)
+                    .WithMany(p => p.ClientNotes)
+                    .HasForeignKey(d => d.ClientId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("ClientNotes_ibfk_1");
             });
 
             modelBuilder.Entity<Flight>(entity =>
             {
-                entity.HasKey(e => e.Idflight)
-                    .HasName("PRIMARY");
+                entity.HasIndex(e => e.AircraftId)
+                    .HasName("aircraftId");
 
-                entity.ToTable("flight");
+                entity.Property(e => e.FlightId).HasColumnName("flightId");
 
-                entity.Property(e => e.Idflight).HasColumnName("idflight");
+                entity.Property(e => e.AircraftId).HasColumnName("aircraftId");
 
                 entity.Property(e => e.Date).HasColumnName("date");
 
                 entity.Property(e => e.Hours)
                     .HasColumnName("hours")
-                    .HasMaxLength(45)
+                    .HasMaxLength(150)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Aircraft)
+                    .WithMany(p => p.Flight)
+                    .HasForeignKey(d => d.AircraftId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Flight_ibfk_1");
             });
 
             modelBuilder.Entity<Job>(entity =>
             {
-                entity.ToTable("job");
+                entity.HasIndex(e => e.EmailAddressId)
+                    .HasName("emailAddressId");
 
                 entity.Property(e => e.JobId).HasColumnName("jobId");
 
-                entity.Property(e => e.ActualTimeTakenHrs).HasColumnName("actualTimeTakenHrs");
+                entity.Property(e => e.AllocatedHours).HasColumnName("allocatedHours");
 
-                entity.Property(e => e.Description)
-                    .HasColumnName("description ")
+                entity.Property(e => e.CumulativeHours).HasColumnName("cumulativeHours");
+
+                entity.Property(e => e.EmailAddressId)
+                    .IsRequired()
+                    .HasColumnName("emailAddressId")
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.TimeTakenhrs).HasColumnName("timeTakenhrs");
+                entity.Property(e => e.JobDescription).HasColumnName("jobDescription");
+
+                entity.Property(e => e.Status)
+                    .HasColumnName("status")
+                    .HasDefaultValueSql("'0'");
+
+                entity.HasOne(d => d.EmailAddress)
+                    .WithMany(p => p.Job)
+                    .HasForeignKey(d => d.EmailAddressId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Job_ibfk_1");
             });
 
             modelBuilder.Entity<Material>(entity =>
             {
-                entity.ToTable("material");
+                entity.HasIndex(e => e.JobId)
+                    .HasName("jobId");
 
                 entity.Property(e => e.MaterialId).HasColumnName("materialId");
 
@@ -171,17 +211,118 @@ namespace Awm.awmDb
 
                 entity.Property(e => e.Gnr)
                     .HasColumnName("gnr")
-                    .HasMaxLength(45)
+                    .HasMaxLength(150)
                     .IsUnicode(false);
 
                 entity.Property(e => e.IntakeDate)
                     .HasColumnName("intakeDate")
                     .HasColumnType("date");
+
+                entity.Property(e => e.JobId).HasColumnName("jobId");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Material)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Material_ibfk_1");
             });
 
-            modelBuilder.Entity<Part>(entity =>
+            modelBuilder.Entity<Service>(entity =>
             {
-                entity.ToTable("part");
+                entity.HasIndex(e => e.AircraftId)
+                    .HasName("aircraftId");
+
+                entity.Property(e => e.ServiceId).HasColumnName("serviceId");
+
+                entity.Property(e => e.AircraftId).HasColumnName("aircraftId");
+
+                entity.Property(e => e.ClientQuotesHrs)
+                    .HasColumnName("clientQuotesHrs")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Description).HasColumnName("description");
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Aircraft)
+                    .WithMany(p => p.Service)
+                    .HasForeignKey(d => d.AircraftId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Service_ibfk_1");
+            });
+
+            modelBuilder.Entity<ServiceTimer>(entity =>
+            {
+                entity.HasIndex(e => e.AircraftId)
+                    .HasName("aircraftId");
+
+                entity.Property(e => e.ServiceTimerId).HasColumnName("serviceTimerId");
+
+                entity.Property(e => e.AircraftId).HasColumnName("aircraftId");
+
+                entity.Property(e => e.NextServiceDate)
+                    .HasColumnName("nextServiceDate")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Status)
+                    .HasColumnName("status")
+                    .HasDefaultValueSql("'0'");
+
+                entity.HasOne(d => d.Aircraft)
+                    .WithMany(p => p.ServiceTimer)
+                    .HasForeignKey(d => d.AircraftId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("ServiceTimer_ibfk_1");
+            });
+
+            modelBuilder.Entity<Shift>(entity =>
+            {
+                entity.HasIndex(e => e.EmailAddressId)
+                    .HasName("emailAddressId");
+
+                entity.Property(e => e.ShiftId).HasColumnName("shiftId");
+
+                entity.Property(e => e.ClockStatus)
+                    .HasColumnName("clockStatus")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DurationHours).HasColumnName("durationHours");
+
+                entity.Property(e => e.EmailAddressId)
+                    .IsRequired()
+                    .HasColumnName("emailAddressId")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EndTime).HasColumnName("endTime");
+
+                entity.Property(e => e.StartTime).HasColumnName("startTime");
+
+                entity.HasOne(d => d.EmailAddress)
+                    .WithMany(p => p.Shift)
+                    .HasForeignKey(d => d.EmailAddressId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Shift_ibfk_1");
+            });
+
+            modelBuilder.Entity<SparePart>(entity =>
+            {
+                entity.HasKey(e => e.PartId)
+                    .HasName("PRIMARY");
+
+                entity.HasIndex(e => e.JobId)
+                    .HasName("jobId");
 
                 entity.Property(e => e.PartId).HasColumnName("partId");
 
@@ -191,74 +332,20 @@ namespace Awm.awmDb
 
                 entity.Property(e => e.Gnr)
                     .HasColumnName("gnr")
-                    .HasMaxLength(45)
+                    .HasMaxLength(150)
                     .IsUnicode(false);
 
                 entity.Property(e => e.IntakeDate)
                     .HasColumnName("intakeDate")
                     .HasColumnType("date");
-            });
 
-            modelBuilder.Entity<Service>(entity =>
-            {
-                entity.HasKey(e => e.Idservice)
-                    .HasName("PRIMARY");
+                entity.Property(e => e.JobId).HasColumnName("jobId");
 
-                entity.ToTable("service");
-
-                entity.Property(e => e.Idservice).HasColumnName("idservice");
-
-                entity.Property(e => e.ClientQuotesHrs)
-                    .HasColumnName("clientQuotesHrs")
-                    .HasDefaultValueSql("'0'");
-
-                entity.Property(e => e.Date)
-                    .HasColumnName("date")
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Description)
-                    .HasColumnName("description")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Name)
-                    .HasColumnName("name")
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<ServiceTimer>(entity =>
-            {
-                entity.ToTable("serviceTimer");
-
-                entity.Property(e => e.ServiceTimerId).HasColumnName("serviceTimerId");
-
-                entity.Property(e => e.NextServiceDate)
-                    .HasColumnName("nextServiceDate")
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Status)
-                    .HasColumnName("status")
-                    .HasDefaultValueSql("'0'");
-            });
-
-            modelBuilder.Entity<Shift>(entity =>
-            {
-                entity.ToTable("shift");
-
-                entity.Property(e => e.ShiftId).HasColumnName("shiftId");
-
-                entity.Property(e => e.Date)
-                    .HasColumnName("date")
-                    .HasColumnType("date");
-
-                entity.Property(e => e.DurationHours).HasColumnName("durationHours");
-
-                entity.Property(e => e.EndTime).HasColumnName("endTime");
-
-                entity.Property(e => e.StartTime).HasColumnName("startTime");
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.SparePart)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("SparePart_ibfk_1");
             });
 
             modelBuilder.Entity<UserAccount>(entity =>
@@ -266,25 +353,29 @@ namespace Awm.awmDb
                 entity.HasKey(e => e.EmailAddressId)
                     .HasName("PRIMARY");
 
-                entity.ToTable("userAccount");
+                entity.Property(e => e.EmailAddressId)
+                    .HasColumnName("emailAddressId")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.FirstName)
                     .HasColumnName("firstName")
-                    .HasMaxLength(45)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Lastname)
-                    .HasMaxLength(45)
+                entity.Property(e => e.LastName)
+                    .HasColumnName("lastName")
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Password)
                     .HasColumnName("password")
-                    .HasMaxLength(45)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Type)
                     .HasColumnName("type")
-                    .HasMaxLength(45)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
             });
 

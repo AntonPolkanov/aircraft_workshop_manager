@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Awm.awmDb
+namespace Awm.AwmDb
 {
     public partial class Flight
     {
-        public int Idflight { get; set; }
+        public int FlightId { get; set; }
+        public int AircraftId { get; set; }
         public DateTime? Date { get; set; }
         public string Hours { get; set; }
+
+        public virtual Aircraft Aircraft { get; set; }
     }
 }
