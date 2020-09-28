@@ -52,7 +52,7 @@ CREATE TABLE `awm`.`ClientNotes` (
 `aircraftId` INT NOT NULL,
   `clientId` INT NOT NULL,
   `description` TEXT,
-  `contactNumber` VARCHAR(50) NULL,
+  `date` DATE NULL,
   PRIMARY KEY (`clientNotesId`),
 FOREIGN KEY (clientId) REFERENCES Client(clientId),
 FOREIGN KEY (aircraftId) REFERENCES Aircraft(aircraftId));
@@ -179,11 +179,11 @@ insert into awm.ServiceTimer values
  
 -- Insert data into table ClientNotes
 insert into awm.ClientNotes values
- (1,1,1, 'check the landing gear', '0412566378'),
- (2,2,2, 'some noise from the rear', '0412564378'),
- (3,3,3, 'needs new paint work', '0415566378'),
-(4,4,4, 'must be delivered in 2 days', '0432566378'),
- (5,5,5, 'check the leaks', '0412565678');
+(1,1,1, 'check the landing gear', '2020-12-22'),
+ (2,2,2, 'some noise from the rear', '2020-10-05'),
+ (3,3,3, 'needs new paint work', '2020-07-15'),
+(4,4,4, 'must be delivered in 2 days', '2020-09-17'),
+ (5,5,5, 'check the leaks', '2020-12-22'); 
 
 -- Insert data into table Service
 insert into awm.Service values
