@@ -3,11 +3,14 @@ using System.Collections.Generic;
 
 namespace Awm.AwmDb
 {
-    public partial class Part
+    public partial class Material
     {
-        public int PartId { get; set; }
+        public int MaterialId { get; set; }
+        public int JobId { get; set; }
         public DateTime? IntakeDate { get; set; }
         public DateTime? BestBeforeDate { get; set; }
         public string Gnr { get; set; }
+
+        public virtual Job Job { get; set; }
     }
 }

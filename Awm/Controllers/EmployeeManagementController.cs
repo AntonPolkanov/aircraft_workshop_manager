@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace Awm.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class EmployeeManagementController : ControllerBase
     {
         private static readonly string[] Summaries = new[]

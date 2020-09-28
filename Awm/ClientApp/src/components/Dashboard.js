@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Link} from 'react-router-dom';
 
 export class Dashboard extends Component {
   static displayName = Dashboard.name;
@@ -8,6 +9,11 @@ export class Dashboard extends Component {
       <div>
         <h1>Dashboard</h1>
         <p>Welcome to your new single-page application, built with:</p>
+        {/*{this.props.auth.isAuthenticated() */}
+        {/*  ? (<Link to="/profile">View profile</Link>) */}
+        {/*  : (<button onClick={this.props.auth.login}>Log In</button>)*/}
+        {/*}*/}
+        
         <ul>
           <li><a href='https://get.asp.net/'>ASP.NET Core</a> and <a href='https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx'>C#</a> for cross-platform server-side code</li>
           <li><a href='https://facebook.github.io/react/'>React</a> for client-side code</li>

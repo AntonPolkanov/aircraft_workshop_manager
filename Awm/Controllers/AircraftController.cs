@@ -7,11 +7,12 @@ using Awm.AwmDb;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Awm.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AircraftController : ControllerBase
     {
         private awmContext dbcontext;
@@ -22,12 +23,14 @@ namespace Awm.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IEnumerable<Aircraft>> Get()
         {
             return await dbcontext.Aircraft.ToListAsync();
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Aircraft>> Get(int id)
         {
             var aircraft = await dbcontext.Aircraft.FindAsync(id);
