@@ -50,7 +50,8 @@ namespace Awm.Controllers
             if (aircraft == null)
                 return NotFound();
             logger.Log(LogLevel.Debug, $"Get aircraft by id {id}");
-            return aircraft;
+
+            return Ok(aircraft);
         }
 
         /// <summary>
@@ -67,6 +68,7 @@ namespace Awm.Controllers
             logger.Log(LogLevel.Debug, aircraft.AircraftId.ToString());
             await dbcontext.Aircraft.AddAsync(aircraft);
             await dbcontext.SaveChangesAsync();
+
             return CreatedAtAction("GetAircraft", new {id = aircraft.AircraftId}, aircraft);
         }
 
@@ -102,7 +104,7 @@ namespace Awm.Controllers
 
             return await dbcontext.Aircraft.FindAsync(id);
         }
-        
+
         /// <summary>
         /// Delete aircraft
         /// </summary>
@@ -120,6 +122,7 @@ namespace Awm.Controllers
 
             dbcontext.Aircraft.Remove(aircraft);
             await dbcontext.SaveChangesAsync();
+
             return Ok();
         }
 
@@ -147,23 +150,24 @@ namespace Awm.Controllers
             if (image == null)
                 return NotFound();
             logger.Log(LogLevel.Debug, $"Get aircraftImage by id {imageId}");
-            return image;
+
+            return Ok(image);
         }
 
         /// <summary>
-        /// Get all images related to an aircraft
+        /// Get all images related to aircraft
         /// </summary>
         /// <param name="aircraftId"></param>
         /// <returns>List of images</returns>
         [HttpGet("aircraft/{aircraftId}/images")]
         [Authorize]
-        public ActionResult<IEnumerable<AircraftImage>> GetImagesOfAircraft(int aircraftId)
+        public ActionResult<IEnumerable<AircraftImageViewModel>> GetImagesOfAircraftList(int aircraftId)
         {
             var aircraft = dbcontext.Aircraft
                 .Where(a => a.AircraftId == aircraftId)
                 .Include(a => a.AircraftImage)
                 .FirstOrDefault();
-                
+
             if (aircraft == null)
                 return NotFound();
             logger.Log(LogLevel.Debug, $"Found aircraft {aircraftId}");
@@ -179,6 +183,7 @@ namespace Awm.Controllers
                         S3Path = image.S3Path
                     });
             }
+
             return Ok(result);
         }
 
@@ -200,16 +205,17 @@ namespace Awm.Controllers
             if (aircraft == null)
                 return NotFound();
             logger.Log(LogLevel.Debug, $"Found aircraft {aircraftId}");
-            
+
             foreach (var image in aircraftImages)
             {
                 await dbcontext.AircraftImage.AddAsync(image);
             }
 
             await dbcontext.SaveChangesAsync();
+
             return Ok();
         }
-        
+
         /// <summary>
         /// Delete aircraft image
         /// </summary>
@@ -225,6 +231,7 @@ namespace Awm.Controllers
             logger.Log(LogLevel.Debug, $"Found aircraft image {aircraftImageId}");
             dbcontext.AircraftImage.Remove(image);
             await dbcontext.SaveChangesAsync();
+
             return Ok();
         }
 
@@ -234,7 +241,7 @@ namespace Awm.Controllers
         /// <returns></returns>
         [HttpGet("aircraft/serviceTimers")]
         [Authorize]
-        public ActionResult<IEnumerable<ServiceTimer>> GetServiceTimerList()
+        public ActionResult<IEnumerable<ServiceTimerViewModel>> GetServiceTimerList()
         {
             var result = new List<ServiceTimerViewModel>();
             foreach (var timer in dbcontext.ServiceTimer)
@@ -247,17 +254,40 @@ namespace Awm.Controllers
                     NextServiceDate = timer.NextServiceDate
                 });
             }
+
             return Ok(result);
         }
 
         /// <summary>
-        /// Get all service timers related to an aircraft
+        /// Get service timer
+        /// </summary>
+        /// <param name="serviceTimerId"></param>
+        /// <returns></returns>
+        [HttpGet("aircraft/serviceTimers/{serviceTimerId}")]
+        [Authorize]
+        public async Task<ActionResult<ServiceTimerViewModel>> GetServiceTimer(int serviceTimerId)
+        {
+            var timer = await dbcontext.ServiceTimer.FindAsync(serviceTimerId);
+            if (timer == null)
+                return NotFound();
+            var result = new ServiceTimerViewModel
+            {
+                ServiceTimerId = timer.ServiceTimerId,
+                AircraftId = timer.AircraftId,
+                Status = timer.Status,
+                NextServiceDate = timer.NextServiceDate
+            };
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get all service timers related to aircraft
         /// </summary>
         /// <param name="aircraftId"></param>
         /// <returns></returns>
         [HttpGet("aircraft/{aircraftId}/serviceTimers")]
         [Authorize]
-        public ActionResult<IEnumerable<ServiceTimer>> GetServiceTimersOfAircraft(int aircraftId)
+        public ActionResult<IEnumerable<ServiceTimerViewModel>> GetServiceTimersOfAircraftList(int aircraftId)
         {
             var aircraft = dbcontext.Aircraft
                 .Where(a => a.AircraftId == aircraftId)
@@ -277,6 +307,7 @@ namespace Awm.Controllers
                     NextServiceDate = timer.NextServiceDate
                 });
             }
+
             return Ok(result);
         }
 
@@ -288,7 +319,8 @@ namespace Awm.Controllers
         /// <returns></returns>
         [HttpPost("aircraft/{aircraftId}/serviceTimers")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<ServiceTimer>>> CreateServiceTimer(int aircraftId, ServiceTimer timer)
+        public async Task<ActionResult<IEnumerable<ServiceTimerViewModel>>> CreateServiceTimer(int aircraftId,
+            ServiceTimer timer)
         {
             if (timer == null)
                 return BadRequest();
@@ -307,7 +339,8 @@ namespace Awm.Controllers
                 Status = timer.Status,
                 NextServiceDate = timer.NextServiceDate
             };
-            return CreatedAtAction("GetServiceTimersOfAircraft", new {aircraftId = timer.AircraftId}, result);
+
+            return CreatedAtAction("GetServiceTimersOfAircraftList", new {aircraftId = timer.AircraftId}, result);
         }
 
         /// <summary>
@@ -316,6 +349,7 @@ namespace Awm.Controllers
         /// <param name="timerId"></param>
         /// <returns></returns>
         [HttpDelete("aircraft/serviceTimers/{timerId}")]
+        [Authorize]
         public async Task<ActionResult> DeleteServiceTimer(int timerId)
         {
             var timer = await dbcontext.ServiceTimer.FindAsync(timerId);
@@ -324,7 +358,462 @@ namespace Awm.Controllers
             logger.Log(LogLevel.Debug, $"Found timer {timer.ServiceTimerId}");
             dbcontext.ServiceTimer.Remove(timer);
             await dbcontext.SaveChangesAsync();
+
             return Ok();
+        }
+
+        /// <summary>
+        /// Get all services
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("aircraft/services")]
+        [Authorize]
+        public ActionResult<IEnumerable<ServiceViewModel>> GetServicesList()
+        {
+            var result = new List<ServiceViewModel>();
+            foreach (var service in dbcontext.Service)
+            {
+                result.Add(new ServiceViewModel
+                {
+                    ServiceId = service.ServiceId,
+                    AircraftId = service.AircraftId,
+                    Date = service.Date,
+                    Description = service.Description,
+                    Name = service.Name,
+                    ClientQuotesHrs = service.ClientQuotesHrs
+                });
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get service
+        /// </summary>
+        /// <param name="serviceId"></param>
+        /// <returns></returns>
+        [HttpGet("aircraft/services/{serviceId}")]
+        [Authorize]
+        public async Task<ActionResult<ServiceViewModel>> GetService(int serviceId)
+        {
+            var service = await dbcontext.Service.FindAsync(serviceId);
+            if (service == null)
+                return NotFound();
+            var result = new ServiceViewModel
+            {
+                ServiceId = service.ServiceId,
+                AircraftId = service.AircraftId,
+                Date = service.Date,
+                Description = service.Description,
+                Name = service.Name,
+                ClientQuotesHrs = service.ClientQuotesHrs
+            };
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get services of specified aircraft
+        /// </summary>
+        /// <param name="aircraftId"></param>
+        /// <returns></returns>
+        [HttpGet("aircraft/{aircraftId}/services")]
+        [Authorize]
+        public ActionResult<IEnumerable<ServiceViewModel>> GetServicesOfAircraftList(int aircraftId)
+        {
+            var aircraft = dbcontext.Aircraft
+                .Where(a => a.AircraftId == aircraftId)
+                .Include(a => a.Service)
+                .FirstOrDefault();
+            if (aircraft == null)
+                return NotFound();
+            var result = new List<ServiceViewModel>();
+            foreach (var service in aircraft.Service)
+            {
+                result.Add(new ServiceViewModel
+                {
+                    ServiceId = service.ServiceId,
+                    AircraftId = service.AircraftId,
+                    Date = service.Date,
+                    Description = service.Description,
+                    Name = service.Name,
+                    ClientQuotesHrs = service.ClientQuotesHrs
+                });
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Create service for specified aircraft
+        /// </summary>
+        /// <param name="aircraftId"></param>
+        /// <param name="service"></param>
+        /// <returns></returns>
+        [HttpPost("aircraft/{aircraftId}/services")]
+        [Authorize]
+        public async Task<ActionResult<ServiceViewModel>> CreateService(int aircraftId, Service service)
+        {
+            if (aircraftId != service.AircraftId)
+                return BadRequest();
+            var aircraft = await dbcontext.Aircraft.FindAsync(aircraftId);
+            if (aircraft == null)
+                return NotFound();
+            await dbcontext.Service.AddAsync(service);
+            await dbcontext.SaveChangesAsync();
+            var result = new ServiceViewModel
+            {
+                ServiceId = service.ServiceId,
+                AircraftId = service.AircraftId,
+                Date = service.Date,
+                Description = service.Description,
+                Name = service.Name,
+                ClientQuotesHrs = service.ClientQuotesHrs
+            };
+
+            return CreatedAtAction("GetService", new {serviceId = service.ServiceId}, result);
+        }
+
+        /// <summary>
+        /// Delete service
+        /// </summary>
+        /// <param name="serviceId"></param>
+        /// <returns></returns>
+        [HttpDelete("aircraft/services/{serviceId}")]
+        [Authorize]
+        public async Task<ActionResult<ServiceViewModel>> DeleteService(int serviceId)
+        {
+            var service = await dbcontext.Service.FindAsync(serviceId);
+            if (service == null)
+                return NotFound();
+            dbcontext.Service.Remove(service);
+            await dbcontext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Get all jobs
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("aircraft/services/jobs")]
+        [Authorize]
+        public ActionResult<IEnumerable<JobViewModel>> GetJobsList()
+        {
+            var result = new List<JobViewModel>();
+            foreach (var job in dbcontext.Job)
+            {
+                result.Add(new JobViewModel
+                {
+                    JobId = job.JobId,
+                    EmailAddressId = job.EmailAddressId,
+                    Status = job.Status,
+                    AllocatedHours = job.AllocatedHours,
+                    CumulativeHours = job.CumulativeHours,
+                    JobDescription = job.JobDescription
+                });
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get job
+        /// </summary>
+        /// <param name="jobId"></param>
+        /// <returns></returns>
+        [HttpGet("aircraft/services/jobs/{jobId}")]
+        [Authorize]
+        public async Task<ActionResult<JobViewModel>> GetJob(int jobId)
+        {
+            var job = await dbcontext.Job.FindAsync(jobId);
+            if (job == null)
+                return NotFound();
+            var result = new JobViewModel
+            {
+                JobId = job.JobId,
+                EmailAddressId = job.EmailAddressId,
+                Status = job.Status,
+                AllocatedHours = job.AllocatedHours,
+                CumulativeHours = job.CumulativeHours,
+                JobDescription = job.JobDescription
+            };
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get all jobs related to service
+        /// </summary>
+        /// <param name="serviceId"></param>
+        /// <returns></returns>
+        [HttpGet("aircraft/services/{serviceId}/jobs")]
+        [Authorize]
+        public ActionResult<IEnumerable<JobViewModel>> GetJobsOfServiceList(int serviceId)
+        {
+            var service = dbcontext.Service
+                .Where(s => s.ServiceId == serviceId)
+                .Include(s => s.Job)
+                .FirstOrDefault();
+            if (service == null)
+                return NotFound();
+            var result = new List<JobViewModel>();
+            foreach (var job in service.Job)
+            {
+                result.Add(new JobViewModel
+                {
+                    JobId = job.JobId,
+                    EmailAddressId = job.EmailAddressId,
+                    Status = job.Status,
+                    AllocatedHours = job.AllocatedHours,
+                    CumulativeHours = job.CumulativeHours,
+                    JobDescription = job.JobDescription
+                });
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Create job for specified service
+        /// </summary>
+        /// <param name="serviceId"></param>
+        /// <param name="job"></param>
+        /// <returns></returns>
+        [HttpPost("aircraft/services/{serviceId}/jobs")]
+        [Authorize]
+        public async Task<ActionResult<JobViewModel>> CreateJob(int serviceId, Job job)
+        {
+            if (serviceId != job.JobId)
+                return BadRequest();
+            var service = await dbcontext.Service.FindAsync(serviceId);
+            if (service == null)
+                return NotFound();
+            await dbcontext.Job.AddAsync(job);
+            await dbcontext.SaveChangesAsync();
+            var result = new JobViewModel
+            {
+                JobId = job.JobId,
+                EmailAddressId = job.EmailAddressId,
+                Status = job.Status,
+                AllocatedHours = job.AllocatedHours,
+                CumulativeHours = job.CumulativeHours,
+                JobDescription = job.JobDescription
+            };
+            
+            return CreatedAtAction("GetJob", new {jobId = job.JobId}, result);
+        }
+
+        /// <summary>
+        /// Get all spare parts
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("aircraft/services/jobs/spareParts")]
+        [Authorize]
+        public ActionResult<SparePartViewModel> GetSparePartsList()
+        {
+            var result = new List<SparePartViewModel>();
+            foreach (var part in dbcontext.SparePart)
+            {
+                result.Add(new SparePartViewModel
+                {
+                    PartId = part.PartId,
+                    JobId = part.JobId,
+                    Gnr = part.Gnr,
+                    IntakeDate = part.IntakeDate,
+                    BestBeforeDate = part.BestBeforeDate
+                });
+            }
+
+            return Ok(result);
+        }
+        
+        /// <summary>
+        /// Get spare part
+        /// </summary>
+        /// <param name="partId"></param>
+        /// <returns></returns>
+        [HttpGet("aircraft/services/jobs/spareParts/{partId}")]
+        [Authorize]
+        public async Task<ActionResult<SparePartViewModel>> GetSparePart(int partId)
+        {
+            var part = await dbcontext.SparePart.FindAsync(partId);
+            if (part == null)
+                return NotFound();
+            var result = new SparePartViewModel
+            {
+                PartId = part.PartId,
+                JobId = part.JobId,
+                Gnr = part.Gnr,
+                IntakeDate = part.IntakeDate,
+                BestBeforeDate = part.BestBeforeDate
+            };
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get spare parts related to job
+        /// </summary>
+        /// <param name="jobId"></param>
+        /// <returns></returns>
+        [HttpGet("aircraft/services/jobs/{jobId}/spareParts")]
+        [Authorize]
+        public ActionResult<IEnumerable<SparePartViewModel>> GetSparePartsOfJobList(int jobId)
+        {
+            var job = dbcontext.Job
+                .Where(j => j.JobId == jobId)
+                .Include(j => j.SparePart)
+                .FirstOrDefault();
+            if (job == null)
+                return NotFound();
+            var result = new List<SparePartViewModel>();
+            foreach (var part in job.SparePart)
+            {
+                result.Add(new SparePartViewModel
+                {
+                    PartId = part.PartId,
+                    JobId = part.JobId,
+                    Gnr = part.Gnr,
+                    IntakeDate = part.IntakeDate,
+                    BestBeforeDate = part.BestBeforeDate
+                });
+            }
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Create spare part for specified job
+        /// </summary>
+        /// <param name="jobId"></param>
+        /// <param name="part"></param>
+        /// <returns></returns>
+        [HttpPost("aircraft/services/jobs/{jobId}/spareParts")]
+        [Authorize]
+        public async Task<ActionResult<SparePartViewModel>> CreateSparePart(int jobId, SparePart part)
+        {
+            var job = await dbcontext.Job.FindAsync(jobId);
+            if (job == null)
+                return NotFound();
+            await dbcontext.SparePart.AddAsync(part);
+            await dbcontext.SaveChangesAsync();
+            var result = new SparePartViewModel
+            {
+                PartId = part.PartId,
+                JobId = part.JobId,
+                Gnr = part.Gnr,
+                IntakeDate = part.IntakeDate,
+                BestBeforeDate = part.BestBeforeDate
+            };
+
+            return CreatedAtAction("GetSparePart", new {partId = part.PartId}, result);
+        }
+        
+        /// <summary>
+        /// Get all materials
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("aircraft/services/jobs/materials")]
+        [Authorize]
+        public ActionResult<MaterialViewModel> GetMaterialList()
+        {
+            var result = new List<MaterialViewModel>();
+            foreach (var material in dbcontext.Material)
+            {
+                result.Add(new MaterialViewModel
+                {
+                    MaterialId = material.MaterialId,
+                    JobId = material.JobId,
+                    Gnr = material.Gnr,
+                    IntakeDate = material.IntakeDate,
+                    BestBeforeDate = material.BestBeforeDate
+                });
+            }
+
+            return Ok(result);
+        }
+        
+        /// <summary>
+        /// Get material
+        /// </summary>
+        /// <param name="materialId"></param>
+        /// <returns></returns>
+        [HttpGet("aircraft/services/jobs/materials/{materialId}")]
+        [Authorize]
+        public async Task<ActionResult<MaterialViewModel>> GetMaterial(int materialId)
+        {
+            var material = await dbcontext.Material.FindAsync(materialId);
+            if (material == null)
+                return NotFound();
+            var result = new MaterialViewModel
+            {
+                MaterialId = material.MaterialId,
+                JobId = material.JobId,
+                Gnr = material.Gnr,
+                IntakeDate = material.IntakeDate,
+                BestBeforeDate = material.BestBeforeDate
+            };
+
+            return Ok(result);
+        }
+        
+        /// <summary>
+        /// Get materials related to job
+        /// </summary>
+        /// <param name="jobId"></param>
+        /// <returns></returns>
+        [HttpGet("aircraft/services/jobs/{jobId}/materials")]
+        [Authorize]
+        public ActionResult<IEnumerable<MaterialViewModel>> GetMaterialsOfJobList(int jobId)
+        {
+            var job = dbcontext.Job
+                .Where(j => j.JobId == jobId)
+                .Include(j => j.Material)
+                .FirstOrDefault();
+            if (job == null)
+                return NotFound();
+            var result = new List<MaterialViewModel>();
+            foreach (var material in job.Material)
+            {
+                result.Add(new MaterialViewModel
+                {
+                    MaterialId = material.MaterialId,
+                    JobId = material.JobId,
+                    Gnr = material.Gnr,
+                    IntakeDate = material.IntakeDate,
+                    BestBeforeDate = material.BestBeforeDate
+                });
+            }
+
+            return Ok(result);
+        }
+        
+        /// <summary>
+        /// Create material for specified job
+        /// </summary>
+        /// <param name="jobId"></param>
+        /// <param name="material"></param>
+        /// <returns></returns>
+        [HttpPost("aircraft/services/jobs/{jobId}/materials")]
+        [Authorize]
+        public async Task<ActionResult<MaterialViewModel>> CreateMaterial(int jobId, Material material)
+        {
+            var job = await dbcontext.Job.FindAsync(jobId);
+            if (job == null)
+                return NotFound();
+            await dbcontext.Material.AddAsync(material);
+            await dbcontext.SaveChangesAsync();
+            var result = new MaterialViewModel
+            {
+                MaterialId = material.MaterialId,
+                JobId = material.JobId,
+                Gnr = material.Gnr,
+                IntakeDate = material.IntakeDate,
+                BestBeforeDate = material.BestBeforeDate
+            };
+
+            return CreatedAtAction("GetMaterial", new {materialId = material.MaterialId}, result);
         }
     }
 }

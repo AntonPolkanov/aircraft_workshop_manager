@@ -14,33 +14,14 @@ namespace Awm.Controllers
     [Route("api/[controller]")]
     public class TestController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        private readonly ILogger<TestController> _logger;
-
-        public TestController(ILogger<TestController> logger)
-        {
-            _logger = logger;
-        }
-
         /// <summary>
         /// Test endpoint
         /// </summary>
         /// <returns>Dummy data</returns>
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public ActionResult<string> Get()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-                {
-                    Date = DateTime.Now.AddDays(index),
-                    TemperatureC = rng.Next(-20, 55),
-                    Summary = Summaries[rng.Next(Summaries.Length)]
-                })
-                .ToArray();
+            return Ok("Hello from Baijiu team!");
         }
         
     }

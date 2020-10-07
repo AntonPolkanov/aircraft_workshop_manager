@@ -7,17 +7,21 @@ namespace Awm.AwmDb
     {
         public UserAccount()
         {
-            Job = new HashSet<Job>();
             Shift = new HashSet<Shift>();
+            Timesheet = new HashSet<Timesheet>();
         }
 
         public string EmailAddressId { get; set; }
+        public int? AircraftId { get; set; }
+        public int? ClientId { get; set; }
         public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Type { get; set; }
 
-        public virtual ICollection<Job> Job { get; set; }
+        public virtual Aircraft Aircraft { get; set; }
+        public virtual Client Client { get; set; }
         public virtual ICollection<Shift> Shift { get; set; }
+        public virtual ICollection<Timesheet> Timesheet { get; set; }
     }
 }

@@ -26,6 +26,7 @@ namespace Awm.AwmDb
         public virtual DbSet<ServiceTimer> ServiceTimer { get; set; }
         public virtual DbSet<Shift> Shift { get; set; }
         public virtual DbSet<SparePart> SparePart { get; set; }
+        public virtual DbSet<Timesheet> Timesheet { get; set; }
         public virtual DbSet<UserAccount> UserAccount { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -48,7 +49,9 @@ namespace Awm.AwmDb
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.LastServiceDate).HasColumnName("lastServiceDate");
+                entity.Property(e => e.LastServiceDate)
+                    .HasColumnName("lastServiceDate")
+                    .HasColumnType("date");
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
@@ -125,10 +128,9 @@ namespace Awm.AwmDb
 
                 entity.Property(e => e.ClientId).HasColumnName("clientId");
 
-                entity.Property(e => e.ContactNumber)
-                    .HasColumnName("contactNumber")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasColumnType("date");
 
                 entity.Property(e => e.Description).HasColumnName("description");
 
@@ -173,6 +175,12 @@ namespace Awm.AwmDb
                 entity.HasIndex(e => e.EmailAddressId)
                     .HasName("emailAddressId");
 
+                entity.HasIndex(e => e.ServiceId)
+                    .HasName("serviceId_idx");
+
+                entity.HasIndex(e => e.ShiftId)
+                    .HasName("shiftId_idx");
+
                 entity.Property(e => e.JobId).HasColumnName("jobId");
 
                 entity.Property(e => e.AllocatedHours).HasColumnName("allocatedHours");
@@ -187,15 +195,23 @@ namespace Awm.AwmDb
 
                 entity.Property(e => e.JobDescription).HasColumnName("jobDescription");
 
+                entity.Property(e => e.ServiceId).HasColumnName("serviceId");
+
+                entity.Property(e => e.ShiftId).HasColumnName("shiftId");
+
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
                     .HasDefaultValueSql("'0'");
 
-                entity.HasOne(d => d.EmailAddress)
+                entity.HasOne(d => d.Service)
                     .WithMany(p => p.Job)
-                    .HasForeignKey(d => d.EmailAddressId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Job_ibfk_1");
+                    .HasForeignKey(d => d.ServiceId)
+                    .HasConstraintName("serviceId");
+
+                entity.HasOne(d => d.Shift)
+                    .WithMany(p => p.Job)
+                    .HasForeignKey(d => d.ShiftId)
+                    .HasConstraintName("shiftId");
             });
 
             modelBuilder.Entity<Material>(entity =>
@@ -289,10 +305,6 @@ namespace Awm.AwmDb
 
                 entity.Property(e => e.ShiftId).HasColumnName("shiftId");
 
-                entity.Property(e => e.ClockStatus)
-                    .HasColumnName("clockStatus")
-                    .HasDefaultValueSql("'0'");
-
                 entity.Property(e => e.Date)
                     .HasColumnName("date")
                     .HasColumnType("date");
@@ -348,15 +360,86 @@ namespace Awm.AwmDb
                     .HasConstraintName("SparePart_ibfk_1");
             });
 
-            modelBuilder.Entity<UserAccount>(entity =>
+            modelBuilder.Entity<Timesheet>(entity =>
             {
-                entity.HasKey(e => e.EmailAddressId)
-                    .HasName("PRIMARY");
+                entity.HasIndex(e => e.AircraftId)
+                    .HasName("aircraftId");
+
+                entity.HasIndex(e => e.EmailAddressId)
+                    .HasName("emailAddressId_idx");
+
+                entity.HasIndex(e => e.JobId)
+                    .HasName("jobId");
+
+                entity.HasIndex(e => e.ShiftId)
+                    .HasName("shiftId");
+
+                entity.Property(e => e.TimesheetId).HasColumnName("timesheetId");
+
+                entity.Property(e => e.ActualHours)
+                    .HasColumnName("actualHours")
+                    .HasMaxLength(45)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AircraftId).HasColumnName("aircraftId");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasColumnType("date");
 
                 entity.Property(e => e.EmailAddressId)
                     .HasColumnName("emailAddressId")
                     .HasMaxLength(100)
                     .IsUnicode(false);
+
+                entity.Property(e => e.EndTime).HasColumnName("endTime");
+
+                entity.Property(e => e.JobId).HasColumnName("jobId");
+
+                entity.Property(e => e.ShiftId).HasColumnName("shiftId");
+
+                entity.Property(e => e.StartTime).HasColumnName("startTime");
+
+                entity.HasOne(d => d.Aircraft)
+                    .WithMany(p => p.Timesheet)
+                    .HasForeignKey(d => d.AircraftId)
+                    .HasConstraintName("Timesheet_ibfk_1");
+
+                entity.HasOne(d => d.EmailAddress)
+                    .WithMany(p => p.Timesheet)
+                    .HasForeignKey(d => d.EmailAddressId)
+                    .HasConstraintName("emailAddressId");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Timesheet)
+                    .HasForeignKey(d => d.JobId)
+                    .HasConstraintName("Timesheet_ibfk_2");
+
+                entity.HasOne(d => d.Shift)
+                    .WithMany(p => p.Timesheet)
+                    .HasForeignKey(d => d.ShiftId)
+                    .HasConstraintName("Timesheet_ibfk_3");
+            });
+
+            modelBuilder.Entity<UserAccount>(entity =>
+            {
+                entity.HasKey(e => e.EmailAddressId)
+                    .HasName("PRIMARY");
+
+                entity.HasIndex(e => e.AircraftId)
+                    .HasName("aircraftId_idx");
+
+                entity.HasIndex(e => e.ClientId)
+                    .HasName("clientId_idx");
+
+                entity.Property(e => e.EmailAddressId)
+                    .HasColumnName("emailAddressId")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AircraftId).HasColumnName("aircraftId");
+
+                entity.Property(e => e.ClientId).HasColumnName("clientId");
 
                 entity.Property(e => e.FirstName)
                     .HasColumnName("firstName")
@@ -377,6 +460,16 @@ namespace Awm.AwmDb
                     .HasColumnName("type")
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Aircraft)
+                    .WithMany(p => p.UserAccount)
+                    .HasForeignKey(d => d.AircraftId)
+                    .HasConstraintName("aircraftId");
+
+                entity.HasOne(d => d.Client)
+                    .WithMany(p => p.UserAccount)
+                    .HasForeignKey(d => d.ClientId)
+                    .HasConstraintName("clientId");
             });
 
             OnModelCreatingPartial(modelBuilder);

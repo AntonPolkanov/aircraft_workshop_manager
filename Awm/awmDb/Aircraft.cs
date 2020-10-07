@@ -12,6 +12,8 @@ namespace Awm.AwmDb
             Flight = new HashSet<Flight>();
             Service = new HashSet<Service>();
             ServiceTimer = new HashSet<ServiceTimer>();
+            Timesheet = new HashSet<Timesheet>();
+            UserAccount = new HashSet<UserAccount>();
         }
 
         public int AircraftId { get; set; }
@@ -26,5 +28,7 @@ namespace Awm.AwmDb
         public virtual ICollection<Flight> Flight { get; set; }
         public virtual ICollection<Service> Service { get; set; }
         public virtual ICollection<ServiceTimer> ServiceTimer { get; set; }
+        public virtual ICollection<Timesheet> Timesheet { get; set; }
+        public virtual ICollection<UserAccount> UserAccount { get; set; }
     }
 }

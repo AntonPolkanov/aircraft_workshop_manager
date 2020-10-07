@@ -8,6 +8,7 @@ namespace Awm.AwmDb
         public Client()
         {
             ClientNotes = new HashSet<ClientNotes>();
+            UserAccount = new HashSet<UserAccount>();
         }
 
         public int ClientId { get; set; }
@@ -15,5 +16,6 @@ namespace Awm.AwmDb
         public string ContactNmuber { get; set; }
 
         public virtual ICollection<ClientNotes> ClientNotes { get; set; }
+        public virtual ICollection<UserAccount> UserAccount { get; set; }
     }
 }

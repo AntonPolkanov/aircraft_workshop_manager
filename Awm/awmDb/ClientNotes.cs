@@ -9,7 +9,7 @@ namespace Awm.AwmDb
         public int AircraftId { get; set; }
         public int ClientId { get; set; }
         public string Description { get; set; }
-        public string ContactNumber { get; set; }
+        public DateTime? Date { get; set; }
 
         public virtual Aircraft Aircraft { get; set; }
         public virtual Client Client { get; set; }
