@@ -7,22 +7,29 @@ using Microsoft.Extensions.Logging;
 
 namespace Awm.Controllers
 {
+    /// <summary>
+    /// Unprotected endpoint for test purposes
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class EmployeeManagementController : ControllerBase
+    public class TestController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<EmployeeManagementController> _logger;
+        private readonly ILogger<TestController> _logger;
 
-        public EmployeeManagementController(ILogger<EmployeeManagementController> logger)
+        public TestController(ILogger<TestController> logger)
         {
             _logger = logger;
         }
 
+        /// <summary>
+        /// Test endpoint
+        /// </summary>
+        /// <returns>Dummy data</returns>
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
@@ -35,14 +42,6 @@ namespace Awm.Controllers
                 })
                 .ToArray();
         }
-
-        [HttpPost("add")]
-        public IActionResult Add(string lastName)
-        {
-            if (lastName == null)
-                return BadRequest();
-            _logger.Log(LogLevel.Debug, lastName);
-            return Ok();
-        }
+        
     }
 }
