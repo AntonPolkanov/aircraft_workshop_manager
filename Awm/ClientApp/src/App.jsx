@@ -12,6 +12,7 @@ import Profile from "./components/Profile";
 import AircraftDetail from "./components/AircraftDetail";
 import PrivateRoute from "./components/PrivateRoute";
 import AuthContext from "./auth/AuthContext";
+import {Work} from "./components/Work";
 
 
 class App extends Component {
@@ -35,6 +36,7 @@ class App extends Component {
           <Route path='/aircrafts' 
                  render={props => <Aircrafts auth={auth} {...props}/>} />
           <Route path='/employees' component={Employees} />
+          <Route path='/workPackages' component={Work}/>
           <PrivateRoute path='/profile'
                         component={Profile}
           />

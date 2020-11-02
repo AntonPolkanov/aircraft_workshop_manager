@@ -130,6 +130,7 @@ namespace Awm
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+            
         }
     }
 }

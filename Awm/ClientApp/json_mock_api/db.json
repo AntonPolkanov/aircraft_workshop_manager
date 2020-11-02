@@ -1,0 +1,111 @@
+﻿{
+  "workPackages": [
+    {
+      "id": 1,
+      "version": 0,
+      "aircraftNumber": "QWE123",
+      "description": "la la la",
+      "date": "12-09-2020"
+    },
+    {
+      "id": 2,
+      "version": 1,
+      "aircraftNumber": "QWE123",
+      "description": "1 la la la",
+      "date": "13-09-2020",
+      "sealed": true,
+      "parentId": 1
+    },
+    {
+      "id": 3,
+      "version": 2,
+      "aircraftNumber": "QWE123",
+      "description": "2 la la la",
+      "date": "14-09-2020",
+      "parentId": 1
+    },
+    {
+      "id": 4,
+      "version": 0,
+      "aircraftNumber": "MMM333",
+      "description": "my description",
+      "date": "03-09-2020"
+    },
+    {
+      "id": 5,
+      "version": 0,
+      "aircraftNumber": "BBB333",
+      "description": "my description 333",
+      "date": "03-09-2020"
+    },
+    {
+      "id": 6,
+      "version": 0,
+      "aircraftNumber": "CCC333",
+      "description": "my description 333",
+      "date": "03-09-2020"
+    },
+    {
+      "id": 7,
+      "version": 1,
+      "aircraftNumber": "CCC333",
+      "description": "my description 333",
+      "date": "04-09-2020",
+      "parentId": 6
+    },
+    {
+      "id": 8,
+      "version": 0,
+      "aircraftNumber": "DDD333",
+      "description": "my description 333",
+      "date": "01-09-2020"
+    },
+    {
+      "id": 9,
+      "version": 0,
+      "aircraftNumber": "EEE333",
+      "description": "my description 333",
+      "date": "03-09-2020"
+    },
+    {
+      "id": 10,
+      "version": 0,
+      "aircraftNumber": "FFF333",
+      "description": "my description 333",
+      "date": "03-09-2020"
+    },
+    {
+      "id": 11,
+      "version": 0,
+      "aircraftNumber": "GGG444",
+      "description": "my description 444",
+      "date": "21-09-2020"
+    },
+    {
+      "id": 12,
+      "version": 1,
+      "sealed": true,
+      "aircraftNumber": "GGG444",
+      "description": "1 my description 444",
+      "date": "21-09-2020",
+      "parentId": 11
+    },
+    {
+      "id": 13,
+      "version": 2,
+      "sealed": true,
+      "aircraftNumber": "GGG444",
+      "description": "2 my description 444",
+      "date": "21-09-2020",
+      "parentId": 11
+    },
+    {
+      "id": 14,
+      "version": 3,
+      "aircraftNumber": "GGG444",
+      "description": "3 my description 444",
+      "date": "21-09-2020",
+      "parentId": 11
+    }
+  ]
+}
