@@ -1,111 +1,207 @@
-﻿{
+{
   "workPackages": [
     {
       "id": 1,
       "version": 0,
-      "aircraftNumber": "QWE123",
-      "description": "la la la",
-      "date": "12-09-2020"
+      "sealed": true,
+      "aircraftNumber": "TESTME",
+      "description": "Annual service",
+      "date": "2020-09-12"
     },
     {
       "id": 2,
       "version": 1,
-      "aircraftNumber": "QWE123",
-      "description": "1 la la la",
-      "date": "13-09-2020",
-      "sealed": true,
-      "parentId": 1
-    },
-    {
-      "id": 3,
-      "version": 2,
-      "aircraftNumber": "QWE123",
-      "description": "2 la la la",
-      "date": "14-09-2020",
-      "parentId": 1
+      "aircraftNumber": "TESTME",
+      "description": "Annual service + additional services",
+      "date": "2020-09-13",
+      "parentId": 1,
+      "estimationId": 1,
+      "sealed": false
     },
     {
       "id": 4,
       "version": 0,
       "aircraftNumber": "MMM333",
       "description": "my description",
-      "date": "03-09-2020"
+      "date": "2020-09-03"
     },
     {
       "id": 5,
       "version": 0,
       "aircraftNumber": "BBB333",
       "description": "my description 333",
-      "date": "03-09-2020"
+      "date": "2020-09-03"
     },
     {
       "id": 6,
       "version": 0,
+      "sealed": true,
       "aircraftNumber": "CCC333",
       "description": "my description 333",
-      "date": "03-09-2020"
+      "date": "2020-09-03"
     },
     {
       "id": 7,
       "version": 1,
       "aircraftNumber": "CCC333",
       "description": "my description 333",
-      "date": "04-09-2020",
-      "parentId": 6
+      "date": "2020-09-04",
+      "parentId": 6,
+      "estimationId": 6
     },
     {
       "id": 8,
       "version": 0,
       "aircraftNumber": "DDD333",
       "description": "my description 333",
-      "date": "01-09-2020"
+      "date": "2020-09-01"
     },
     {
       "id": 9,
       "version": 0,
       "aircraftNumber": "EEE333",
       "description": "my description 333",
-      "date": "03-09-2020"
+      "date": "2020-09-03"
     },
     {
       "id": 10,
       "version": 0,
       "aircraftNumber": "FFF333",
       "description": "my description 333",
-      "date": "03-09-2020"
+      "date": "2020-09-03"
     },
     {
       "id": 11,
       "version": 0,
+      "sealed": true,
       "aircraftNumber": "GGG444",
       "description": "my description 444",
-      "date": "21-09-2020"
+      "date": "2020-09-21"
     },
     {
       "id": 12,
       "version": 1,
-      "sealed": true,
+      "sealed": false,
       "aircraftNumber": "GGG444",
       "description": "1 my description 444",
-      "date": "21-09-2020",
-      "parentId": 11
+      "date": "2020-09-21",
+      "parentId": 11,
+      "estimationId": 11
     },
     {
-      "id": 13,
-      "version": 2,
-      "sealed": true,
-      "aircraftNumber": "GGG444",
-      "description": "2 my description 444",
-      "date": "21-09-2020",
-      "parentId": 11
+      "id": 15,
+      "version": 0,
+      "aircraftNumber": "123",
+      "date": "2020-11-02",
+      "description": "qqq"
     },
     {
-      "id": 14,
-      "version": 3,
-      "aircraftNumber": "GGG444",
-      "description": "3 my description 444",
-      "date": "21-09-2020",
-      "parentId": 11
+      "aircraftNumber": "222",
+      "version": 0,
+      "date": "2020-11-02",
+      "description": "www",
+      "id": 16
+    },
+    {
+      "aircraftNumber": "333",
+      "version": 0,
+      "date": "2020-11-02",
+      "description": "eee",
+      "id": 17
+    },
+    {
+      "aircraftNumber": "444",
+      "version": 0,
+      "date": "2020-11-02",
+      "description": "rrr",
+      "id": 18
+    },
+    {
+      "aircraftNumber": "555",
+      "version": 0,
+      "date": "2020-11-02",
+      "description": "ttt",
+      "id": 19
+    },
+    {
+      "aircraftNumber": "666",
+      "version": 0,
+      "date": "2020-11-02",
+      "description": "yyy",
+      "id": 20
+    }
+  ],
+  "jobs": [
+    {
+      "id": 1,
+      "number": "JB1",
+      "status": "In Progress",
+      "description": "Engine service",
+      "estimatedDuration": 180,
+      "actualDuration": 58,
+      "workPackage": 2
+    },
+    {
+      "id": 2,
+      "number": "JB2",
+      "status": "Created",
+      "description": "Painting service",
+      "estimatedDuration": 30,
+      "workPackage": 2
+    }
+  ],
+  "tasks": [
+    {
+      "id": 1,
+      "number": "T1",
+      "status": "In Progress",
+      "description": "Change oil",
+      "assignedTo": [
+        100,
+        101
+      ],
+      "assignedToText": "A. Schwarzenegger, B. Willis",
+      "clockedOff": 40,
+      "job": 1
+    },
+    {
+      "id": 2,
+      "number": "T2",
+      "status": "Done",
+      "description": "Change filter",
+      "assignedTo": [
+        102
+      ],
+      "assignedToText": "C. Norris",
+      "clockedOff": 18,
+      "job": 1
+    },
+    {
+      "id": 2,
+      "number": "T3",
+      "status": "Planned",
+      "description": "Paint",
+      "job": 1
+    }
+  ],
+  "employees": [
+    {
+      "id": 100,
+      "firstName": "Arnold",
+      "lastName": "Schwarzenegger",
+      "position": "Mechanic"
+    },
+    {
+      "id": 101,
+      "firstName": "Bruce",
+      "lastName": "Willis",
+      "position": "Senior Mechanic"
+    },
+    {
+      "id": 102,
+      "firstName": "Chuck",
+      "lastName": "Norris",
+      "position": "Technician"
     }
   ]
 }
