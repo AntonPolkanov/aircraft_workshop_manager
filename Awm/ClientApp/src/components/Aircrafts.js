@@ -32,10 +32,9 @@ export class Aircrafts extends Component {
   }
 
   render() {
-    
     return (
       <>
-        <h1 id="tabelLabel">Aircrafts</h1>
+        <h2>Aircrafts</h2>
         <Nav tabs>
           <NavItem>
             <NavLink
@@ -68,15 +67,5 @@ export class Aircrafts extends Component {
         </TabContent>
       </>
     );
-  }
-
-  async populateWeatherData() {
-    const response = await fetch('api/aircraft', {
-      headers: {
-        Authorization: `Bearer ${this.props.auth.getAccessToken()}`
-      }
-    });
-    const data = await response.json();
-    this.setState({aircrafts: data, loading: false});
   }
 }

@@ -40,19 +40,36 @@ export class NavMenu extends Component {
                 <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
                 <Collapse className="d-sm-inline-flex flex-sm-row" isOpen={!this.state.collapsed} navbar>
                   <div className="navbar-nav flex-grow-1">
-                    <NavItem>
-                      <NavLink tag={Link} className="text-dark" to="/">Dashboard</NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink tag={Link} className="text-dark" to="/aircrafts">Aircrafts</NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink tag={Link} className="text-dark" to="/workPackages">Work</NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink tag={Link} className="text-dark" to="/employees">Employees</NavLink>
-                    </NavItem>
-
+                    {
+                      !auth.isAuthenticated() &&
+                      <NavItem>
+                        <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
+                      </NavItem>
+                    }
+                    {
+                      auth.isAuthenticated() &&
+                      <NavItem>
+                        <NavLink tag={Link} className="text-dark" to="/dashboard">Dashboard</NavLink>
+                      </NavItem>
+                    }
+                    {
+                      auth.isAuthenticated() &&
+                      <NavItem>
+                        <NavLink tag={Link} className="text-dark" to="/aircrafts">Aircrafts</NavLink>
+                      </NavItem>  
+                    }
+                    {
+                      auth.isAuthenticated() &&
+                      <NavItem>
+                        <NavLink tag={Link} className="text-dark" to="/workPackages">Work</NavLink>
+                      </NavItem>  
+                    }
+                    {
+                      auth.isAuthenticated() &&
+                      <NavItem>
+                        <NavLink tag={Link} className="text-dark" to="/employees">Employees</NavLink>
+                      </NavItem>
+                    }
                   </div>
                   <div className="navbar-nav d-sm-inline-flex">
                     {

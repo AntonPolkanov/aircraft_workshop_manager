@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Layout } from './components/Layout';
-import { Dashboard } from './components/Dashboard';
+import React, {Component} from 'react';
+import {Layout} from './components/Layout';
+import {Dashboard} from './components/Dashboard';
 import Employees from './components/Employees';
-import { Aircrafts } from './components/Aircrafts';
+import {Aircrafts} from './components/Aircrafts';
 
 import './custom.css'
 import Auth from "./auth/Auth";
@@ -15,10 +15,12 @@ import AuthContext from "./auth/AuthContext";
 import {Work} from "./components/Work";
 import {WorkPackageEditor} from "./components/WorkPackageEditor";
 import {JobEditor} from "./components/JobEditor";
+import {Home} from "./components/Home";
 
 
 class App extends Component {
   static displayName = App.name;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -26,28 +28,30 @@ class App extends Component {
     }
   }
 
-  render () {
+  render() {
     const {auth} = this.state;
     return (
       <AuthContext.Provider value={auth}>
         <Layout>
-          <Route exact path='/'
-                 render={props => <Dashboard auth={auth} {...props}/>} />
-          <Route path='/callback'
-                 render={props => <Callback auth={auth} {...props}/>} />
-          <Route path='/aircrafts' 
-                 render={props => <Aircrafts auth={auth} {...props}/>} />
-          <Route path='/employees' component={Employees} />
-          <Route path='/workPackages' component={Work}/>
-          <Route exact path='/workPackageEditor' component={WorkPackageEditor}/>
-          <Route path='/workPackageEditor/jobEditor' component={JobEditor}/>
-          <PrivateRoute path='/profile'
-                        component={Profile}
-          />
-          <PrivateRoute path="/aircraftdetail"
-                        component={AircraftDetail}
-                        scopes={["read:aircraft"]}
-          />         
+          {/*<Route exact path='/'*/}
+          {/*       render={(props) => {*/}
+          {/*         return (*/}
+          {/*           auth.isAuthenticated()*/}
+          {/*             ? <Redirect to='/dashboard'/>*/}
+          {/*             : <Redirect to='/home'/>*/}
+          {/*         )*/}
+          {/*       }}*/}
+          {/*/>*/}
+          <Route exact path='/' component={Home}/>
+          <PrivateRoute path='/dashboard' component={Dashboard}/>
+          <Route path='/callback' render={props => <Callback auth={auth} {...props}/>}/>
+          <PrivateRoute path='/aircrafts' component={Aircrafts}/>
+          <PrivateRoute path='/employees' component={Employees}/>
+          <PrivateRoute path='/workPackages' component={Work}/>
+          <PrivateRoute exact path='/workPackageEditor' component={WorkPackageEditor}/>
+          <PrivateRoute path='/workPackageEditor/jobEditor' component={JobEditor}/>
+          <PrivateRoute path='/profile' component={Profile}/>
+          <PrivateRoute path="/aircraftdetail" component={AircraftDetail}/>
         </Layout>
       </AuthContext.Provider>
     );
