@@ -1,76 +1,72 @@
 import React, {Component} from 'react';
-import {Button, Container, Row, Col} from 'reactstrap';
+import {Button, Container, Row, Col, NavItem, NavLink, Nav, TabContent, TabPane} from 'reactstrap';
 import Moment from 'moment';
+import {ServiceTimeline} from "./ServiceTimeline";
+import classnames from 'classnames';
+import {Fleet} from "./Fleet";
 
 export class Aircrafts extends Component {
   static displayName = Aircrafts.name;
 
   constructor(props) {
     super(props);
-    this.state = {aircrafts: [], loading: true};
+    this.toggleTab = this.toggleTab.bind(this);
+    this.state = {
+      aircrafts: [], 
+      loading: true,
+      activeTab: '1'
+    };
     this.errorMessage = "";
   }
 
   componentDidMount() {
-    this.populateWeatherData()
-      .catch(error => this.setState({errorMessage: error.message, loading: false}));
+    
   }
-
-  static renderForecastsTable(aircrafts) {
-    Moment.locale('en');
-    return (
-      <table className='table table-striped table-hover' aria-labelledby="tabelLabel">
-        <thead>
-        <tr>
-          <th/>
-          <th>Id</th>
-          <th>Name</th>
-          <th>Registration Number</th>
-          <th>Engine</th>
-          <th>Last Service Date</th>
-          
-        </tr>
-        </thead>
-        <tbody>
-        {aircrafts.map(aircraft =>
-          <tr key={aircraft.aircraftId}>
-            <th scope="row"><a href={"aircraftdetail/" + aircraft.aircraftId} className="stretched-link"/></th>
-            <td>{aircraft.aircraftId}</td>
-            <td>{aircraft.name}</td>
-            <td>{aircraft.registrationNumber}</td>
-            <td>{aircraft.engine}</td>
-            <td>{Moment(new Date(aircraft.lastServiceDate)).format("DD-MM-yyyy")}</td>
-            
-          </tr>
-        )}
-        </tbody>
-      </table>
-    );
+  
+  toggleTab(tab, a) {
+    if (this.state.activeTab !== tab) {
+      this.setState({
+        activeTab: tab
+      })
+    }
   }
 
   render() {
-    let contents = this.state.loading
-      ? <p><em>Loading...</em></p>
-      : Aircrafts.renderForecastsTable(this.state.aircrafts);
-
+    
     return (
-      <Container>
+      <>
         <h1 id="tabelLabel">Aircrafts</h1>
-        <Row className="mb-2">
-          <Col>
-            <Button color="primary">Add</Button>
-          </Col>
-        </Row>
-        <Row className="mb-2">
-          <Col>
-            {
-              !this.state.errorMessage 
-                ? contents
-                : <div>{this.state.errorMessage}</div>
-            }
-          </Col>
-        </Row>
-      </Container>
+        <Nav tabs>
+          <NavItem>
+            <NavLink
+              className={classnames({active: this.state.activeTab === '1'})}
+              onClick={() => {this.toggleTab('1');}}
+            >
+              Service Timeline
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({active: this.state.activeTab === '2'})}
+              onClick={() => {this.toggleTab('2');}}
+            >
+              Fleet
+            </NavLink>
+          </NavItem>
+        </Nav>
+        <TabContent activeTab={this.state.activeTab}>
+          <TabPane tabId='1' >
+            <div style={{marginTop: 10}}>
+              <ServiceTimeline/>
+            </div>
+          </TabPane>
+          <TabPane tabId='2'>
+            <div style={{marginTop: 10}}>
+             <Fleet/>
+            </div>
+          </TabPane>
+        </TabContent>
+      </>
     );
   }
 
@@ -83,5 +79,4 @@ export class Aircrafts extends Component {
     const data = await response.json();
     this.setState({aircrafts: data, loading: false});
   }
-
 }

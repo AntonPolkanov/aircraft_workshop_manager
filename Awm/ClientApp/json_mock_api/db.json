@@ -4,47 +4,48 @@
       "id": 1,
       "version": 0,
       "sealed": true,
-      "aircraftNumber": "TESTME",
+      "aircraftNumber": "N904DE",
       "description": "Annual service",
       "date": "2020-09-12"
     },
     {
       "id": 2,
       "version": 1,
-      "aircraftNumber": "TESTME",
+      "aircraftNumber": "N904DE",
       "description": "Annual service + additional services",
       "date": "2020-09-13",
       "parentId": 1,
       "estimationId": 1,
-      "sealed": false
+      "sealed": true
     },
     {
       "id": 4,
       "version": 0,
-      "aircraftNumber": "MMM333",
-      "description": "my description",
-      "date": "2020-09-03"
+      "aircraftNumber": "H904WE",
+      "description": "Problem in the landing gear",
+      "date": "2020-09-03",
+      "sealed": true
     },
     {
       "id": 5,
       "version": 0,
-      "aircraftNumber": "BBB333",
-      "description": "my description 333",
+      "aircraftNumber": "U304DR",
+      "description": "Oil leak from rear",
       "date": "2020-09-03"
     },
     {
       "id": 6,
       "version": 0,
       "sealed": true,
-      "aircraftNumber": "CCC333",
-      "description": "my description 333",
+      "aircraftNumber": "D309PE",
+      "description": "Annual service + paint work",
       "date": "2020-09-03"
     },
     {
       "id": 7,
       "version": 1,
-      "aircraftNumber": "CCC333",
-      "description": "my description 333",
+      "aircraftNumber": "D309PE",
+      "description": "Annual service + paint work",
       "date": "2020-09-04",
       "parentId": 6,
       "estimationId": 6
@@ -52,38 +53,38 @@
     {
       "id": 8,
       "version": 0,
-      "aircraftNumber": "DDD333",
-      "description": "my description 333",
+      "aircraftNumber": "G904TY",
+      "description": "Some noise from the rear",
       "date": "2020-09-01"
     },
     {
       "id": 9,
       "version": 0,
-      "aircraftNumber": "EEE333",
-      "description": "my description 333",
+      "aircraftNumber": "EX3T33",
+      "description": "Inspection and reapplication of corrosion protective coatings",
       "date": "2020-09-03"
     },
     {
       "id": 10,
       "version": 0,
-      "aircraftNumber": "FFF333",
-      "description": "my description 333",
+      "aircraftNumber": "AF73XT",
+      "description": "Torque tests + internal checks + flight controls ",
       "date": "2020-09-03"
     },
     {
       "id": 11,
       "version": 0,
       "sealed": true,
-      "aircraftNumber": "GGG444",
-      "description": "my description 444",
+      "aircraftNumber": "GX4L44",
+      "description": "Walk-around visual check of aircraft",
       "date": "2020-09-21"
     },
     {
       "id": 12,
       "version": 1,
       "sealed": false,
-      "aircraftNumber": "GGG444",
-      "description": "1 my description 444",
+      "aircraftNumber": "GX4L44",
+      "description": "No leakage and tire wear but front brake needs replacement",
       "date": "2020-09-21",
       "parentId": 11,
       "estimationId": 11
@@ -91,44 +92,71 @@
     {
       "id": 15,
       "version": 0,
-      "aircraftNumber": "123",
+      "aircraftNumber": "FH1M23",
       "date": "2020-11-02",
-      "description": "qqq"
+      "description": "Specific checks on engine oils, hydraulics & oxygen"
     },
     {
-      "aircraftNumber": "222",
+      "aircraftNumber": "AB2I67",
       "version": 0,
       "date": "2020-11-02",
-      "description": "www",
+      "description": "Lubrication of systems such as ignition, generators, cabin, air conditioning, hydraulics, structure, and landing gear",
       "id": 16
     },
     {
-      "aircraftNumber": "333",
+      "aircraftNumber": "M3QZ89",
       "version": 0,
       "date": "2020-11-02",
-      "description": "eee",
+      "description": "Detailed check of aircraft and engine interior",
       "id": 17
     },
     {
-      "aircraftNumber": "444",
+      "aircraftNumber": "KP78T6",
       "version": 0,
       "date": "2020-11-02",
-      "description": "rrr",
+      "description": "Major structural inspections with attention to fatigue damage, corrosion, etc",
       "id": 18
     },
     {
-      "aircraftNumber": "555",
+      "aircraftNumber": "PL5E56",
       "version": 0,
       "date": "2020-11-02",
-      "description": "ttt",
+      "description": "Lubrication of systems such as ignition, generators, cabin, air conditioning, hydraulics, structure, and landing gear",
       "id": 19
     },
     {
-      "aircraftNumber": "666",
+      "aircraftNumber": "BD6M24",
       "version": 0,
       "date": "2020-11-02",
-      "description": "yyy",
+      "description": "Visual check of aircraft exterior and engines for damage, leakage, and brake and tire wear",
       "id": 20
+    },
+    {
+      "aircraftNumber": "H904WE",
+      "version": 1,
+      "date": "2020-11-06",
+      "description": "Annual service + additional services + painting",
+      "estimationId": 4,
+      "parentId": 4,
+      "id": 21
+    },
+    {
+      "aircraftNumber": "H904WE",
+      "version": 1,
+      "date": "2020-11-06",
+      "description": "Annual service + additional services + painting",
+      "estimationId": 4,
+      "parentId": 4,
+      "id": 22
+    },
+    {
+      "aircraftNumber": "N904DE",
+      "version": 2,
+      "date": "2020-11-06",
+      "description": "Annual service + additional services + painting",
+      "estimationId": 1,
+      "parentId": 2,
+      "id": 23
     }
   ],
   "jobs": [
@@ -139,7 +167,7 @@
       "description": "Engine service",
       "estimatedDuration": 180,
       "actualDuration": 58,
-      "workPackage": 2
+      "workPackage": 23
     },
     {
       "id": 2,
@@ -147,7 +175,7 @@
       "status": "Created",
       "description": "Painting service",
       "estimatedDuration": 30,
-      "workPackage": 2
+      "workPackage": 23
     }
   ],
   "tasks": [
@@ -189,7 +217,7 @@
       "id": 100,
       "firstName": "Arnold",
       "lastName": "Schwarzenegger",
-      "position": "Mechanic"
+      "position": "Junior Mechanic"
     },
     {
       "id": 101,
@@ -202,6 +230,139 @@
       "firstName": "Chuck",
       "lastName": "Norris",
       "position": "Technician"
+    },
+    {
+      "id": 103,
+      "firstName": "Jason",
+      "lastName": "Statham",
+      "position": "Mechanic"
+    }
+  ],
+  "aircrafts": [
+    {
+      "id": 1,
+      "registrationNumber": "N904DE",
+      "builtYear": 1998,
+      "engine": "YPK-14-2",
+      "lastServiceDate": "2020-02-16",
+      "contactNumber": "0423167593",
+      "workedOn": [
+        {
+          "name": "B.Willis",
+          "startDate": "2020-08-16",
+          "endDate": "2020-09-29"
+        },
+        {
+          "name": "C.Norris",
+          "startDate": "2020-08-19",
+          "endDate": "2020-09-23"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "registrationNumber": "H904WE",
+      "builtYear": 2006,
+      "engine": "EGS-15-E",
+      "lastServiceDate": "2020-03-17",
+      "contactNumber": "0421324234",
+      "workedOn": [
+        {
+          "name": "A.Schwarzenegger",
+          "startDate": "2020-09-17",
+          "endDate": "2020-10-24"
+        },
+        {
+          "name": "J.Statham",
+          "startDate": "2020-09-23",
+          "endDate": "2020-10-28"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "registrationNumber": "U304DR",
+      "builtYear": 2009,
+      "engine": "ETD-09-1E",
+      "lastServiceDate": "2020-04-18",
+      "contactNumber": "0424938413",
+      "workedOn": [
+        {
+          "name": "J.Statham",
+          "startDate": "2020-10-18",
+          "endDate": "2020-11-10"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "registrationNumber": "D309PE",
+      "builtYear": 2002,
+      "engine": "LNS-88-W",
+      "lastServiceDate": "2020-05-19",
+      "contactNumber": "04216514455",
+      "workedOn": [
+        {
+          "startDate": "2020-12-04",
+          "endDate": "2021-01-20"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "registrationNumber": "G904TY",
+      "builtYear": 1999,
+      "engine": "PLM-68-9L",
+      "lastServiceDate": "2020-06-20",
+      "contactNumber": "04211213195"
+    },
+    {
+      "id": 6,
+      "registrationNumber": "EX3T33",
+      "builtYear": 2013,
+      "engine": "VH-P9-65",
+      "lastServiceDate": "2020-07-21",
+      "contactNumber": "0421943218"
+    },
+    {
+      "id": 7,
+      "registrationNumber": "AF73XT",
+      "builtYear": 2015,
+      "engine": "VQ-EG-02",
+      "lastServiceDate": "2020-07-22",
+      "contactNumber": "0421621312"
+    },
+    {
+      "id": 8,
+      "registrationNumber": "GX4L44",
+      "builtYear": 2010,
+      "engine": "LNS-88-W",
+      "lastServiceDate": "2020-06-10",
+      "contactNumber": "0421616848"
+    },
+    {
+      "id": 9,
+      "registrationNumber": "FH1M23",
+      "builtYear": 2008,
+      "engine": "LNS-88-W",
+      "lastServiceDate": "2020-04-08",
+      "contactNumber": "0421616843"
+    },
+    {
+      "id": 10,
+      "registrationNumber": "AB2I67",
+      "builtYear": 2007,
+      "engine": "WGE-E4-Q",
+      "lastServiceDate": "2020-10-13",
+      "contactNumber": "04217545598"
+    },
+    {
+      "id": 11,
+      "registrationNumber": "M3QZ89",
+      "builtYear": 2006,
+      "engine": "QHE-YY-1",
+      "lastServiceDate": "2020-10-05",
+      "contactNumber": "04217545598"
     }
   ]
 }
