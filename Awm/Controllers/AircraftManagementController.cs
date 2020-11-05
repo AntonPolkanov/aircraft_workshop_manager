@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Awm.AwmDb;
 using Awm.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 
@@ -65,6 +62,12 @@ namespace Awm.Controllers
         {
             if (aircraft == null)
                 return BadRequest();
+            if (aircraft.AircraftId == 0) // default
+            {
+                var maxId = await dbcontext.Aircraft.MaxAsync(a => a.AircraftId);
+                aircraft.AircraftId = maxId + 1;
+            }
+            
             logger.Log(LogLevel.Debug, aircraft.AircraftId.ToString());
             await dbcontext.Aircraft.AddAsync(aircraft);
             await dbcontext.SaveChangesAsync();
@@ -324,6 +327,11 @@ namespace Awm.Controllers
         {
             if (timer == null)
                 return BadRequest();
+            if (timer.ServiceTimerId == 0) // default
+            {
+                var maxId = await dbcontext.ServiceTimer.MaxAsync(t => t.ServiceTimerId);
+                timer.ServiceTimerId = maxId + 1;
+            }
             var aircraft = dbcontext.Aircraft
                 .Where(a => a.AircraftId == aircraftId)
                 .Include(a => a.ServiceTimer)
