@@ -31,9 +31,6 @@ export default async function (groupCount = 30, itemCount = 100, daysInPast = 30
         title: worker.name ?? "Planned",
         start: startValue,
         end: endValue,
-        // canMove: startValue > new Date().getTime(),
-        // canResize: startValue > new Date().getTime() ? (endValue > new Date().getTime() ? 'both' : 'left') : (endValue > new Date().getTime() ? 'right' : false),
-        // className: (moment(startDate).day() === 6 || moment(startDate).day() === 0) ? 'item-weekend' : '',
         itemProps: {
           'data-tip': worker.name
         }

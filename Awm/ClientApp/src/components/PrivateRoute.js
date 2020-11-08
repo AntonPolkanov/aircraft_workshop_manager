@@ -10,7 +10,7 @@ function PrivateRoute({component: Component, scopes, ...rest}) {
         <Route
           {...rest}
           render={props => {
-            // 1. Redirect to login if not logged in.
+            // 1. Redirect to home if not logged in.
             if (!auth.isAuthenticated())
               return (<Redirect to="/"/>);
 
