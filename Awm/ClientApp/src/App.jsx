@@ -33,16 +33,16 @@ class App extends Component {
     return (
       <AuthContext.Provider value={auth}>
         <Layout>
-          {/*<Route exact path='/'*/}
-          {/*       render={(props) => {*/}
-          {/*         return (*/}
-          {/*           auth.isAuthenticated()*/}
-          {/*             ? <Redirect to='/dashboard'/>*/}
-          {/*             : <Redirect to='/home'/>*/}
-          {/*         )*/}
-          {/*       }}*/}
-          {/*/>*/}
-          <Route exact path='/' component={Home}/>
+          <Route exact path='/'
+                 render={(props) => {
+                   return (
+                     auth.isAuthenticated()
+                       ? <Redirect to='/dashboard'/>
+                       : <Redirect to='/home'/>
+                   )
+                 }}
+          />
+          <Route exact path='/home' component={Home}/>
           <PrivateRoute path='/dashboard' component={Dashboard}/>
           <Route path='/callback' render={props => <Callback auth={auth} {...props}/>}/>
           <PrivateRoute path='/aircrafts' component={Aircrafts}/>

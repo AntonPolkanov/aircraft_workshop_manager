@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import {Route} from 'react-router-dom';
+import {Route, Redirect} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import AuthContext from "../auth/AuthContext";
 
@@ -12,7 +12,7 @@ function PrivateRoute({component: Component, scopes, ...rest}) {
           render={props => {
             // 1. Redirect to login if not logged in.
             if (!auth.isAuthenticated())
-              return auth.login();
+              return (<Redirect to="/"/>);
 
             // 2. Display message if user lacks required scopes.
             if (scopes.length > 0 && !auth.userHasScopes(scopes)) {

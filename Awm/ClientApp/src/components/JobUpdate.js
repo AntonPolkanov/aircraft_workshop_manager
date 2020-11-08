@@ -22,7 +22,7 @@ const statusList = [
   {status: 'Reopen', isActive: false}
 ]
 
-export class JobUpdate extends Component {  
+export class JobUpdate extends Component {
   constructor(props) {
     super(props);
     this.onChangeJobNumber = this.onChangeJobNumber.bind(this);
@@ -35,7 +35,7 @@ export class JobUpdate extends Component {
     this.job = props.job;
     this.setActive(props.job.status);
     this.state = {
-      jobNumber: props.job.jobNumber,
+      jobNumber: props.job.number,
       status: props.job.status,
       description: props.job.description,
       estimatedDuration: props.job.estimatedDuration,
@@ -73,13 +73,13 @@ export class JobUpdate extends Component {
       state: e.target.value
     })
   }
-  
+
   onChangeDescription(e) {
     this.setState({
       description: e.target.value
     })
   }
-  
+
   onChangeEstimatedDuration(e) {
     this.setState({
       estimatedDuration: e.target.value
@@ -91,29 +91,40 @@ export class JobUpdate extends Component {
       actualDuration: e.target.value
     })
   }
-  
+
   onFormSubmit(e) {
-    
+
   }
-  
+
   openTaskDetails(rowData) {
-    
+
   }
-  
+
   setActive(status) {
     const activeStatusIndex = statusList.findIndex(i => i.status === status);
-    statusList.forEach(i => i.isActive = false);
-    statusList[activeStatusIndex].isActive = true;
+    if (activeStatusIndex !== -1) {
+      statusList.forEach(i => i.isActive = false);
+      statusList[activeStatusIndex].isActive = true;
+    }
   }
-  
+
   handleStatusSelection(e) {
     const newStatus = e.currentTarget.textContent;
     this.setActive(newStatus);
     this.setState({
-      status: newStatus 
+      status: newStatus
     });
   }
+
+  async createNewTask(newTask) {
+    newTask.job = this.job.id;
+    return await axios.post(`${process.env.REACT_APP_API_URL}/tasks`, newTask);
+  }
   
+  async deleteTask(task) {
+    await axios.delete(`${process.env.REACT_APP_API_URL}/tasks/${task.id}`, task);
+  }
+
   renderTable(data) {
     return (
       <MaterialTable
@@ -123,34 +134,52 @@ export class JobUpdate extends Component {
           {title: 'Task', field: 'number'},
           {title: 'Status', field: 'status'},
           {title: 'Description', field: 'description'},
-          {title: 'Clocked Off', field: 'clockedOff', editable:'never'},
-          {title: 'Assigned To', field: 'assignedToText', editable:'never'},
+          {title: 'Clocked Off', field: 'clockedOff', editable: 'never'},
+          {title: 'Assigned To', field: 'assignedToText', editable: 'never'},
         ]}
         options={{
-          paging: false
+          paging: false,
+          actionsColumnIndex: -1
         }}
         onRowClick={(event, rowData, togglePanel) => this.openTaskDetails(rowData)}
         editable={{
           onRowAdd: newData =>
             new Promise((resolve, reject) => {
-              setTimeout(() => {
-                this.setState({tasksData:[...data, newData]});
-
-                resolve();
-              }, 1000)
+              this.createNewTask(newData)
+                .then(response => {
+                  this.setState({tasksData: [...data, response.data]});
+                  resolve();
+                })
+                .catch(err => {
+                  reject();
+                });
+            }),
+          onRowDelete: oldData =>
+            new Promise((resolve, reject) => {
+              this.deleteTask(oldData)
+                .then(response => {
+                  const dataDelete = [...data];
+                  const index = oldData.tableData.id;
+                  dataDelete.splice(index, 1);
+                  this.setState({tasksData: [...dataDelete]});
+                  resolve();
+                })                
+                .catch(err => {
+                  reject();
+                })
             })
         }}
       />
     )
   }
-  
+
   render() {
     return (
       <>
         <Form onSubmit={this.onFormSubmit}>
           <Row form>
             <Col>
-              <Button type="submit" color="primary" style={{marginBottom: 20}}>Update</Button>
+              <Button disabled type="submit" color="primary" style={{marginBottom: 20}}>Update</Button>
             </Col>
           </Row>
           <Row form>
@@ -184,7 +213,8 @@ export class JobUpdate extends Component {
                   </DropdownToggle>
                   <DropdownMenu>
                     {statusList.map(i =>
-                      <DropdownItem key={i.status} onClick={this.handleStatusSelection} active={i.isActive}>{i.status}</DropdownItem>
+                      <DropdownItem key={i.status} onClick={this.handleStatusSelection}
+                                    active={i.isActive}>{i.status}</DropdownItem>
                     )}
                   </DropdownMenu>
                 </UncontrolledDropdown>

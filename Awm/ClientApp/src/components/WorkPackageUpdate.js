@@ -78,7 +78,7 @@ export class WorkPackageUpdate extends Component {
     });
   }
   
-    openJobDetails(rowData) {
+  openJobDetails(rowData) {
     this.history.push({
       pathname: `/workPackageEditor/jobEditor`,
       state: {

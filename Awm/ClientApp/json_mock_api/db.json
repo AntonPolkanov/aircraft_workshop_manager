@@ -172,7 +172,7 @@
     {
       "id": 2,
       "number": "JB2",
-      "status": "Created",
+      "status": "Open",
       "description": "Painting service",
       "estimatedDuration": 30,
       "workPackage": 23
@@ -184,31 +184,43 @@
       "number": "T1",
       "status": "In Progress",
       "description": "Change oil",
-      "assignedTo": [
-        100,
-        101
-      ],
-      "assignedToText": "A. Schwarzenegger, B. Willis",
-      "clockedOff": 40,
+      "assignedTo": 100,
+      "assignedToText": "A. Schwarzenegger",
+      "clockedOff": 30,
       "job": 1
     },
     {
       "id": 2,
+      "number": "T1",
+      "status": "In Progress",
+      "description": "Change oil",
+      "assignedTo": 101,
+      "assignedToText": "B. Willis",
+      "clockedOff": 10,
+      "job": 1
+    },
+    {
+      "id": 3,
       "number": "T2",
       "status": "Done",
       "description": "Change filter",
-      "assignedTo": [
-        102
-      ],
+      "assignedTo": 102,
       "assignedToText": "C. Norris",
       "clockedOff": 18,
       "job": 1
     },
     {
-      "id": 2,
+      "id": 4,
       "number": "T3",
       "status": "Planned",
       "description": "Paint",
+      "job": 1
+    },
+    {
+      "id": 5,
+      "number": "T4",
+      "status": "Planned",
+      "description": "Change a wheel",
       "job": 1
     }
   ],
