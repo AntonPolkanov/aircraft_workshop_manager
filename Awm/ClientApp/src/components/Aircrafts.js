@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Container, Row, Col, NavItem, NavLink, Nav, TabContent, TabPane} from 'reactstrap';
-import Moment from 'moment';
+import {NavItem, NavLink, Nav, TabContent, TabPane} from 'reactstrap';
 import {ServiceTimeline} from "./ServiceTimeline";
 import classnames from 'classnames';
 import {Fleet} from "./Fleet";
@@ -10,11 +9,11 @@ export class Aircrafts extends Component {
 
   constructor(props) {
     super(props);
-    this.toggleTab = this.toggleTab.bind(this);
+    const currentActiveTab = sessionStorage.getItem("activeAircraftTab") ?? '1';
     this.state = {
       aircrafts: [], 
       loading: true,
-      activeTab: '1'
+      activeTab: currentActiveTab
     };
     this.errorMessage = "";
   }
@@ -23,7 +22,11 @@ export class Aircrafts extends Component {
     
   }
   
-  toggleTab(tab, a) {
+  componentWillUnmount() {
+    sessionStorage.setItem("activeAircraftTab", this.state.activeTab);
+  }
+
+  toggleTab(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
         activeTab: tab

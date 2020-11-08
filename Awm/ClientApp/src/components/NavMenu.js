@@ -55,13 +55,13 @@ export class NavMenu extends Component {
                     {
                       auth.isAuthenticated() &&
                       <NavItem>
-                        <NavLink tag={Link} className="text-dark" to="/aircrafts">Aircrafts</NavLink>
-                      </NavItem>  
+                        <NavLink tag={Link} className="text-dark" to="/workPackages">Work</NavLink>
+                      </NavItem>
                     }
                     {
                       auth.isAuthenticated() &&
                       <NavItem>
-                        <NavLink tag={Link} className="text-dark" to="/workPackages">Work</NavLink>
+                        <NavLink tag={Link} className="text-dark" to="/aircrafts">Aircrafts</NavLink>
                       </NavItem>  
                     }
                     {

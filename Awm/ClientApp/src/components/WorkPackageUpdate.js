@@ -2,7 +2,7 @@
 import moment from "moment";
 import MaterialTable from "material-table";
 import axios from "axios";
-import {Badge, Button, Col, Container, Form, FormGroup, Input, InputGroup, Label, Row} from "reactstrap";
+import {Button, Col, Form, FormGroup, Input, InputGroup, Label, Row} from "reactstrap";
 import DeferredSpinner from "./DeferredSpinner";
 
 export class WorkPackageUpdate extends Component {

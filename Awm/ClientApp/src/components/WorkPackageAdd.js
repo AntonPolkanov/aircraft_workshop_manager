@@ -3,7 +3,6 @@ import {Button, Col, Form, FormGroup, Input, InputGroup, Label, Row} from "react
 import moment from 'moment';
 import axios from 'axios';
 import MaterialTable from "material-table";
-import DeferredSpinner from "./DeferredSpinner";
 
 export class WorkPackageAdd extends Component {
   constructor(props) {
@@ -60,7 +59,6 @@ export class WorkPackageAdd extends Component {
       <MaterialTable
         title='Jobs'
         data={data}
-
         columns={[
           {title: 'Job', field: 'number'},
           {title: 'Status', field: 'status'},
