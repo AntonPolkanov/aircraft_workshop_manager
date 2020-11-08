@@ -102,7 +102,7 @@ export class WorkPackage extends Component {
           {title: 'Version', field: 'version'},
           {title: 'Description', field: 'description'}
         ]}
-        parentChildData={(row, rows) => rows.find(a => a.id === row.estimationId)}
+        // parentChildData={(row, rows) => rows.find(a => a.id === row.estimationId)}
         actions={[
           {
             icon: 'add',
@@ -126,10 +126,11 @@ export class WorkPackage extends Component {
         options={{
           exportButton: true,
           exportAllData: true,
+          grouping: true,
           actionsColumnIndex: -1,
-          rowStyle: rowData => ({
-            backgroundColor: !!rowData.estimationId ? '#F5F5F5' : '#FFF'
-          })
+          // rowStyle: rowData => ({
+          //   backgroundColor: !!rowData.estimationId ? '#F5F5F5' : '#FFF'
+          // })
         }}
         onRowClick={(event, rowData, togglePanel) => this.openWPDetails(rowData)}
       >
