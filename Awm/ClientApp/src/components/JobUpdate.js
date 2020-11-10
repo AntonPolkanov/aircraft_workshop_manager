@@ -45,23 +45,10 @@ export class JobUpdate extends Component {
     }
   }
 
-  componentDidMount() {
-    this.fetchTasks();
+  async componentDidMount() {
+    await this.fetchTasks();
   }
-
-  fetchTasks() {
-    axios.get(`${process.env.REACT_APP_API_URL}/tasks?job=${this.job.id}`)
-      .then(response => {
-        this.setState({
-          tasksData: response.data,
-          loading: false
-        })
-      })
-      .catch(err => {
-        console.log(`Cannot fetch Tasks`)
-      });
-  }
-
+  
   onChangeJobNumber(e) {
     this.setState({
       jobNumber: e.target.value
@@ -100,6 +87,18 @@ export class JobUpdate extends Component {
 
   }
 
+  async fetchTasks() {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/tasks?job=${this.job.id}`);
+      this.setState({
+        tasksData: response.data,
+        loading: false
+      });
+    } catch {
+      console.log(`Cannot fetch Tasks`);
+    }
+  }
+
   setActive(status) {
     const activeStatusIndex = statusList.findIndex(i => i.status === status);
     if (activeStatusIndex !== -1) {
@@ -134,7 +133,7 @@ export class JobUpdate extends Component {
           {title: 'Task', field: 'number'},
           {title: 'Status', field: 'status'},
           {title: 'Description', field: 'description'},
-          {title: 'Clocked Off', field: 'clockedOff', editable: 'never'},
+          {title: 'Clocked Off', field: 'clockedOff', editable: 'never', emptyValue: 0},
           {title: 'Assigned To', field: 'assignedToText', editable: 'never'},
         ]}
         options={{
